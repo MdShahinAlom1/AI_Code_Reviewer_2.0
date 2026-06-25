@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(cuid())
+  name          String
+  email         String        @unique
+  password      String
+  role          String        @default("STUDENT")
+  institution   String?
+  avatarUrl     String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  submissions   Submission[]
+  taughtClasses Class[]       @relation("TeacherClasses")
+  memberships   ClassMember[]
+  notifications Notification[]
+}
+
+model Language {
+  id          String       @id @default(cuid())
+  name        String
+  slug        String       @unique
+  enabled     Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  submissions Submission[]
+}
+
+model Class {
+  id          String        @id @default(cuid())
+  name        String
+  code        String        @unique
+  teacherId   String
+  teacher     User          @relation("TeacherClasses", fields: [teacherId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  members     ClassMember[]
+  assignments Assignment[]
+}
+
+model ClassMember {
+  id        String   @id @default(cuid())
+  classId   String
+  userId    String
+  joinedAt  DateTime @default(now())
+
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, userId])
+}
+
+model Assignment {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  classId     String
+  language    String?
+  deadline    DateTime?
+  minScore    Int          @default(70)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  class       Class        @relation(fields: [classId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+}
+
+model Submission {
+  id           String   @id @default(cuid())
+  userId       String
+  languageId   String
+  assignmentId String?
+  title        String
+  code         String
+  status       String   @default("PENDING")
+  qualityScore Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  analyzedAt   DateTime?
+
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  language     Language    @relation(fields: [languageId], references: [id])
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+  bugReport    BugReport?
+}
+
+model BugReport {
+  id             String      @id @default(cuid())
+  submissionId   String      @unique
+  totalBugs      Int         @default(0)
+  criticalCount  Int         @default(0)
+  highCount      Int         @default(0)
+  mediumCount    Int         @default(0)
+  lowCount       Int         @default(0)
+  infoCount      Int         @default(0)
+  qualityScore   Int         @default(100)
+  createdAt      DateTime    @default(now())
+
+  submission     Submission  @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  bugRecords     BugRecord[]
+}
+
+model BugRecord {
+  id                   String   @id @default(cuid())
+  bugReportId           String
+  title                String
+  line                 Int?
+  severity             String
+  category             String
+  whyItMatters          String
+  beginnerExplanation   String
+  expertExplanation     String
+  howToFix              String
+  beforeCode            String?
+  afterCode             String?
+  learningTopic         String?
+  feedback              String?
+  createdAt             DateTime @default(now())
+
+  bugReport             BugReport @relation(fields: [bugReportId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
