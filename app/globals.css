@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #0a0d14;
+    --surface: #0f1420;
+    --surface-2: #141926;
+    --surface-3: #1a2133;
+    --border: rgba(255, 255, 255, 0.08);
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --brand: #0998ee;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { background: var(--bg); }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgba(9, 152, 238, 0.35);
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #475569; }
+}
+
+@layer components {
+  .card {
+    @apply bg-[#0f1420] border border-white/[0.08] rounded-xl;
+  }
+
+  .card-glow {
+    @apply card shadow-[0_0_30px_rgba(9,152,238,0.05)];
+  }
+
+  .btn-primary {
+    @apply bg-brand-600 hover:bg-brand-700 text-white font-medium px-4 py-2 rounded-lg transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-slate-200 font-medium px-4 py-2 rounded-lg transition-all duration-150;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-white/[0.06] text-slate-400 hover:text-slate-200 font-medium px-3 py-2 rounded-lg transition-all duration-150;
+  }
+
+  .input {
+    @apply bg-[#141926] border border-white/[0.1] rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/40 transition-all;
+  }
+
+  .badge-critical { @apply bg-red-500/15 text-red-400 border border-red-500/30; }
+  .badge-high { @apply bg-orange-500/15 text-orange-400 border border-orange-500/30; }
+  .badge-medium { @apply bg-yellow-500/15 text-yellow-400 border border-yellow-500/30; }
+  .badge-low { @apply bg-blue-500/15 text-blue-400 border border-blue-500/30; }
+  .badge-info { @apply bg-slate-500/15 text-slate-400 border border-slate-500/30; }
+}
+
+.code-font {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #33b2ff, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
