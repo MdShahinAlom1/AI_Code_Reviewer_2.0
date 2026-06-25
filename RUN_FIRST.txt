@@ -1,0 +1,20 @@
+CodeGuard AI - fixed version
+
+Local run:
+1. npm install
+2. npm run db:push
+3. npm run db:seed
+4. npm run dev
+
+Vercel deploy:
+1. Push this whole project to GitHub.
+2. In Vercel Project Settings > Environment Variables add:
+   DATABASE_URL=file:./dev.db
+   NEXTAUTH_SECRET=make-a-long-random-secret-here
+   NEXTAUTH_URL=https://your-vercel-domain.vercel.app
+3. Redeploy.
+
+Registration fix:
+- The register API now validates input and saves users correctly.
+- For Vercel/serverless, SQLite is copied to /tmp at runtime so user registration can write successfully.
+- Demo logins still work: student@codeguard.ai, teacher@codeguard.ai, admin@codeguard.ai with password password123.
